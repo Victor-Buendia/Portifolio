@@ -14,12 +14,12 @@ public class Validacao {
 		return true;
 	}
 	
-	public static boolean isCodigoValido (String codigo, ColecaoPlantas colecaoPlantas) {
+	public static boolean isCodigoValido (String codigo) {
 		final int VALOR_MINIMO = 100;
 		try {
 			int valor = Integer.parseInt(codigo);
-			if (valor <= VALOR_MINIMO || !isCodigoUnico(valor, colecaoPlantas)) {
-				Visao.mostraMensagemErro("Error", "O codigo deve ser unico e maior que " + VALOR_MINIMO + ".");
+			if (valor <= VALOR_MINIMO) {
+				Visao.mostraMensagemErro("Error", "O codigo deve ser maior que " + VALOR_MINIMO + ".");
 				return false;
 			}
 		} catch (NumberFormatException e) {
@@ -29,9 +29,20 @@ public class Validacao {
 		return true;
 	}
 	
+	public static boolean isCodigoValido (String codigo, ColecaoPlantas colecaoPlantas) {
+		if (isCodigoValido(codigo)) {
+			if (!isCodigoUnico(Integer.parseInt(codigo), colecaoPlantas)) {
+				Visao.mostraMensagemErro("Error", "O codigo deve ser unico.");
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean isPesoMedioValido (String pesoMedio) {
-		final float VALOR_MINIMO = 1.5f;
-		final float VALOR_MAXIMO = 100f;
+		final float VALOR_MINIMO = 0f;
+		final float VALOR_MAXIMO = 1f;
 		try {
 			float valor = Float.parseFloat(pesoMedio);
 			if (valor < VALOR_MINIMO || valor > VALOR_MAXIMO) {

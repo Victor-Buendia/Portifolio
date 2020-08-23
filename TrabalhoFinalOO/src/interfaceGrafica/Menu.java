@@ -9,11 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import dados.ColecaoPlantas;
-import dados.Planta;
 import saida.Visao;
 
 public class Menu extends JFrame {
@@ -23,7 +19,8 @@ public class Menu extends JFrame {
 	private JButton botaoCadastrar, botaoListar, botaoConsultar, botaoPesquisar, botaoSair;
 	
 	public Menu () {		
-		// Configuracoes Padroes da Interface Grafica
+		// Configuracoes gerais JFrame
+		setVisible(true);
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -34,7 +31,6 @@ public class Menu extends JFrame {
 	
 	public void menu (ColecaoPlantas colecaoPlantas) {
 		// Configuracoes JFrame
-		setVisible(true);
 		setTitle("Menu");
 		setSize(600, 300);
 		setLocationRelativeTo(null);
@@ -65,7 +61,13 @@ public class Menu extends JFrame {
 		botaoConsultar = criaBotao("Consultar");
 		botaoConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
+					new ConsultarDados().consultarCodigo(colecaoPlantas);
+					dispose();
+				}
+				else {
+					Visao.mostraMensagemErro("Error", "E necessario registrar no minimo uma planta para acessar esta opcao.");
+				}
 			}
 		});
 		containerMenu.add(botaoConsultar);
@@ -73,10 +75,13 @@ public class Menu extends JFrame {
 		botaoPesquisar = criaBotao("Pesquisar");
 		botaoPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Planta> listaPlantasOrdenada = new ArrayList<Planta>(colecaoPlantas.getColecaoPlantas());
-				Collections.sort(listaPlantasOrdenada);
-				new ListarDados().listarDadosOrdenados(colecaoPlantas, listaPlantasOrdenada);
-				dispose();
+				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
+					new ConsultarDados().pesquisarNome(colecaoPlantas);
+					dispose();
+				}
+				else {
+					Visao.mostraMensagemErro("Error", "E necessario registrar no minimo uma planta para acessar esta opcao.");
+				}
 			}
 		});
 		containerMenu.add(botaoPesquisar);

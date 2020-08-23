@@ -33,7 +33,8 @@ private static final long serialVersionUID = 1L;
 	private DefaultTableModel modelo = new DefaultTableModel();
 	
 	public ListarDados () {		
-		// Configuracoes Padroes da Interface Grafica
+		// Configuracoes gerais JFrame
+		setVisible(true);
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -43,9 +44,8 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public void listarDados (ColecaoPlantas colecaoPlantas, List<Planta> listaPlanta) {
-		// Configuracoes JFrame
-		setVisible(true);
-		setTitle("Teste");
+		// Configuracoes proprias JFrame
+		setTitle("Listar Plantas");
 		setSize(500, 350);
 		setLocationRelativeTo(null);
 		
@@ -63,13 +63,12 @@ private static final long serialVersionUID = 1L;
 		containerListaDados.add(botaoConfirmar);
 	}
 	
-	public void listarDadosOrdenados (ColecaoPlantas colecaoPlantas, List<Planta> listaPlanta) {
+	public void listarDadosOrdenados (ColecaoPlantas colecaoPlantas, List<Planta> listaPlanta, String nomeProcurado) {
 		// Atributos
 		int qtd;
 		
-		// Configuracoes JFrame
-		setVisible(true);
-		setTitle("Teste");
+		// Configuracoes proprias JFrame
+		setTitle("Listar Plantas");
 		setSize(500, 390);
 		setLocationRelativeTo(null);
 		
@@ -80,8 +79,9 @@ private static final long serialVersionUID = 1L;
 		// Conficuracoes dos Componentes
 		criaTabela(listaPlanta);
 		criaBotoes(colecaoPlantas);
-		qtd = adicionaLinhas(listaPlanta, "a");
-		etiq = new JLabel(qtd + " Planta(s) encontrada(s) no sistema.", JLabel.CENTER);
+		
+		qtd = adicionaLinhas(listaPlanta, nomeProcurado);
+		etiq = new JLabel(qtd + " Planta(s) encontrada(s) pelo nome [" + nomeProcurado + "] no sistema.", JLabel.CENTER);
 		
 		painelTabela.add(barraRolagem);
 		containerListaDados.add(painelTabela);
@@ -133,7 +133,7 @@ private static final long serialVersionUID = 1L;
 	private int adicionaLinhas (List<Planta> listaPlanta, String nomePlanta) {
 		int qtdPLantas = 0;
 		for (Planta planta : listaPlanta) {
-			if (planta.getNome().contains(nomePlanta)) {
+			if (planta.getNome().toLowerCase().contains(nomePlanta.toLowerCase())) {
 				qtdPLantas++;
 				modelo.addRow(new Object[]{
 					planta.getNome(), 

@@ -23,13 +23,14 @@ public class EntradaDados extends JFrame {
 	
 	// Atributos
 	private Container containerEntradaDados;
-	private JTextField nome, codigo, pesoMedio;
+	private JTextField entradaNome, entradaCodigo, entradaPesoMedio;
 	private JPanel painelTextos, painelBotoes;
 	private JLabel etiq1, etiq2, etiq3;
 	private JButton botaoConfirmar, botaoCancelar;
 	
 	public EntradaDados () {		
-		// Configuracoes Padroes da Interface Grafica
+		// Configuracoes gerais JFrame
+		setVisible(true);
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -40,7 +41,6 @@ public class EntradaDados extends JFrame {
 	
 	public void entradaDados (ColecaoPlantas colecaoPlantas) {
 		// Configuracoes JFrame
-		setVisible(true);
 		setTitle("Registro de Plantas");
 		setSize(500, 220);
 		setLocationRelativeTo(null);
@@ -54,19 +54,19 @@ public class EntradaDados extends JFrame {
 		painelBotoes = new JPanel(new FlowLayout(1, 80, 0));
 		
 		etiq1 = new JLabel("Digite o Nome da Planta: ");
-		nome = new JTextField();
+		entradaNome = new JTextField();
 		painelTextos.add(etiq1);
-		painelTextos.add(nome);
+		painelTextos.add(entradaNome);
 		
 		etiq2 = new JLabel("Digite o Codigo da Planta: ");
-		codigo = new JTextField();
+		entradaCodigo = new JTextField();
 		painelTextos.add(etiq2);
-		painelTextos.add(codigo);
+		painelTextos.add(entradaCodigo);
 		
-		etiq3 = new JLabel("Digite o Peso Medio da Planta: ");
-		pesoMedio = new JTextField();
+		etiq3 = new JLabel("Digite o Peso Medio da Planta (KG): ");
+		entradaPesoMedio = new JTextField();
 		painelTextos.add(etiq3);
-		painelTextos.add(pesoMedio);
+		painelTextos.add(entradaPesoMedio);
 		
 		botaoConfirmar = new JButton("Confirmar");
 		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
@@ -92,20 +92,20 @@ public class EntradaDados extends JFrame {
 	}
 	
 	private void acaoBotaoConfirmar (ActionEvent evt, ColecaoPlantas colecaoPlantas) {
-		if (!Validacao.isNomeValido(nome.getText())) {
-			nome.setText("");
+		if (!Validacao.isNomeValido(entradaNome.getText().trim())) {
+			entradaNome.setText("");
 		}
-		else if (!Validacao.isCodigoValido(codigo.getText(), colecaoPlantas)) {
-			codigo.setText("");
+		else if (!Validacao.isCodigoValido(entradaCodigo.getText(), colecaoPlantas)) {
+			entradaCodigo.setText("");
 		}
-		else if (!Validacao.isPesoMedioValido(pesoMedio.getText())) {
-			pesoMedio.setText("");
+		else if (!Validacao.isPesoMedioValido(entradaPesoMedio.getText())) {
+			entradaPesoMedio.setText("");
 		}
 		else {
 			colecaoPlantas.setColecaoPlantas(new Planta(
-				nome.getText(), 
-				Integer.parseInt(codigo.getText()), 
-				Float.parseFloat(pesoMedio.getText())
+				entradaNome.getText().trim(),
+				Integer.parseInt(entradaCodigo.getText()), 
+				Float.parseFloat(entradaPesoMedio.getText())
 			));
 			new Menu().menu(colecaoPlantas);
 			dispose();

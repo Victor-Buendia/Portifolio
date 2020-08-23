@@ -1,5 +1,7 @@
 package interfaceGrafica;
 
-public class MostraTexto {
+import javax.swing.JFrame;
+
+public class MostraTexto extends JFrame {
 
 }
