@@ -30,7 +30,14 @@ private static final long serialVersionUID = 1L;
 	private JLabel etiq;
 	private JButton botaoConfirmar;
 	private DefaultTableCellRenderer renderizarCelulas = new DefaultTableCellRenderer();
-	private DefaultTableModel modelo = new DefaultTableModel();
+	private DefaultTableModel modelo = new DefaultTableModel() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+	    public boolean isCellEditable(int row, int column) {
+	       return false;
+	    }
+	};
 	
 	public ListarDados () {		
 		// Configuracoes gerais JFrame
@@ -113,7 +120,7 @@ private static final long serialVersionUID = 1L;
 		
 		modelo.addColumn("Nome");
 		modelo.addColumn("Codigo");
-		modelo.addColumn("Peso Medio");
+		modelo.addColumn("Peso Medio (KG)");
 		modelo.setNumRows(0);
 	}
 	
@@ -122,9 +129,9 @@ private static final long serialVersionUID = 1L;
 		for (Planta planta : listaPlanta) {
 			qtdPLantas++;
 			modelo.addRow(new Object[]{
-				planta.getNome(), 
+				planta.getNome().toUpperCase(), 
 				planta.getCodigo(), 
-				new DecimalFormat("0.00").format(planta.getPesoMedio())
+				new DecimalFormat("0.0000").format(planta.getPesoMedio())
 			});
 		}
 		return qtdPLantas;
@@ -136,9 +143,9 @@ private static final long serialVersionUID = 1L;
 			if (planta.getNome().toLowerCase().contains(nomePlanta.toLowerCase())) {
 				qtdPLantas++;
 				modelo.addRow(new Object[]{
-					planta.getNome(), 
+					planta.getNome().toUpperCase(), 
 					planta.getCodigo(), 
-					new DecimalFormat("0.00").format(planta.getPesoMedio())
+					new DecimalFormat("0.0000").format(planta.getPesoMedio())
 				});
 			}
 		}

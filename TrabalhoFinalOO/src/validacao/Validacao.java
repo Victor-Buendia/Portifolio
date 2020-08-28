@@ -2,13 +2,16 @@ package validacao;
 
 import dados.ColecaoPlantas;
 import dados.Planta;
-import saida.Visao;
+import interfaceGrafica.MostrarTexto;
 
 public class Validacao {
 	public static boolean isNomeValido (String nome) {
 		final int TAM_MINIMO = 3;
 		if (nome.length() < TAM_MINIMO || isDigitosNome(nome)) {
-			Visao.mostraMensagemErro("Error", "Nome deve possuir no minimo " + TAM_MINIMO + " caracteres que nao podem ser numericos.");
+			new MostrarTexto().mostraMensagem(
+				"Error", 
+				"Nome deve possuir no minimo " + TAM_MINIMO + " caracteres que nao podem ser numericos."
+			);
 			return false;
 		}
 		return true;
@@ -19,11 +22,17 @@ public class Validacao {
 		try {
 			int valor = Integer.parseInt(codigo);
 			if (valor <= VALOR_MINIMO) {
-				Visao.mostraMensagemErro("Error", "O codigo deve ser maior que " + VALOR_MINIMO + ".");
+				new MostrarTexto().mostraMensagem(
+					"Error", 
+					"O codigo deve ser maior que " + VALOR_MINIMO + "."
+				);
 				return false;
 			}
 		} catch (NumberFormatException e) {
-			Visao.mostraMensagemErro("Error", "A entrada deve ser numerica.");
+			new MostrarTexto().mostraMensagem(
+				"Error", 
+				"A entrada deve ser numerica."
+			);
 			return false;
 		}
 		return true;
@@ -32,7 +41,10 @@ public class Validacao {
 	public static boolean isCodigoValido (String codigo, ColecaoPlantas colecaoPlantas) {
 		if (isCodigoValido(codigo)) {
 			if (!isCodigoUnico(Integer.parseInt(codigo), colecaoPlantas)) {
-				Visao.mostraMensagemErro("Error", "O codigo deve ser unico.");
+				new MostrarTexto().mostraMensagem(
+					"Error", 
+					"O codigo deve ser unico."
+				);
 				return false;
 			}
 			return true;
@@ -46,11 +58,17 @@ public class Validacao {
 		try {
 			float valor = Float.parseFloat(pesoMedio);
 			if (valor < VALOR_MINIMO || valor > VALOR_MAXIMO) {
-				Visao.mostraMensagemErro("Error", "O peso medio deve estar entre [" + VALOR_MINIMO + " e " + VALOR_MAXIMO + "].");
+				new MostrarTexto().mostraMensagem(
+					"Error", 
+					"O peso medio deve estar entre " + VALOR_MINIMO + " e " + VALOR_MAXIMO + "."
+				);
 				return false;
 			}
 		} catch (NumberFormatException e) {
-			Visao.mostraMensagemErro("Error", "A entrada deve ser numerica.");
+			new MostrarTexto().mostraMensagem(
+				"Error", 
+				"A entrada deve ser numerica."
+			);
 			return false;
 		}
 		return true;

@@ -1,10 +1,5 @@
 package interfaceGrafica;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,20 +8,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import validacao.Validacao;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import dados.ColecaoPlantas;
 import dados.Planta;
+import validacao.Validacao;
 
 public class EntradaDados extends JFrame {
 	private static final long serialVersionUID = 1L;
-	
+		
 	// Atributos
-	private Container containerEntradaDados;
-	private JTextField entradaNome, entradaCodigo, entradaPesoMedio;
-	private JPanel painelTextos, painelBotoes;
-	private JLabel etiq1, etiq2, etiq3;
+	private Container containerConsultarDados;
+	private JLabel etiq;
+	private JTextField entradaDado;
 	private JButton botaoConfirmar, botaoCancelar;
+	private JPanel painelBotoes, painelCampoDeTexto;
 	
 	public EntradaDados () {		
 		// Configuracoes gerais JFrame
@@ -39,76 +41,146 @@ public class EntradaDados extends JFrame {
 		});
 	}
 	
-	public void entradaDados (ColecaoPlantas colecaoPlantas) {
+	public void registrarNomePesquisador () {
 		// Configuracoes JFrame
-		setTitle("Registro de Plantas");
-		setSize(500, 220);
+		setTitle("Registrar Pesquisador");
+		setSize(540, 140);
 		setLocationRelativeTo(null);
 		
 		// Configuracoes do Container
-		containerEntradaDados = getContentPane();
-		containerEntradaDados.setLayout(new FlowLayout(1, 20, 20));
+		containerConsultarDados = getContentPane();
+		containerConsultarDados.setLayout(new FlowLayout(1, 1000, 20));
 		
 		// Conficuracoes dos Componentes
-		painelTextos = new JPanel(new GridLayout(3, 2, 10, 20));
-		painelBotoes = new JPanel(new FlowLayout(1, 80, 0));
-		
-		etiq1 = new JLabel("Digite o Nome da Planta: ");
-		entradaNome = new JTextField();
-		painelTextos.add(etiq1);
-		painelTextos.add(entradaNome);
-		
-		etiq2 = new JLabel("Digite o Codigo da Planta: ");
-		entradaCodigo = new JTextField();
-		painelTextos.add(etiq2);
-		painelTextos.add(entradaCodigo);
-		
-		etiq3 = new JLabel("Digite o Peso Medio da Planta (KG): ");
-		entradaPesoMedio = new JTextField();
-		painelTextos.add(etiq3);
-		painelTextos.add(entradaPesoMedio);
+		criaPainelCampoDeTexto("Digite o Nome do Pesquisador: ");
 		
 		botaoConfirmar = new JButton("Confirmar");
 		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				acaoBotaoConfirmar(evt, colecaoPlantas);
+				if (!Validacao.isNomeValido(entradaDado.getText().trim())) {
+					entradaDado.setText("");
+				}
+				else {
+					new Menu().menu(new ColecaoPlantas(entradaDado.getText()));
+					dispose();
+				}
 			}
 		});
-		painelBotoes.add(botaoConfirmar);
 		
+		containerConsultarDados.add(painelCampoDeTexto);
+		containerConsultarDados.add(botaoConfirmar);
+	}
+	
+	public void consultarCodigo (ColecaoPlantas colecaoPlantas) {
+		// Configuracoes JFrame
+		setTitle("Consultar Planta");
+		setSize(540, 140);
+		setLocationRelativeTo(null);
+		
+		// Configuracoes do Container
+		containerConsultarDados = getContentPane();
+		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
+		
+		// Conficuracoes dos Componentes
+		criaPainelBotoes(colecaoPlantas);
+		criaPainelCampoDeTexto("Digite o Codigo da Planta a ser pesquisada: ");
+		
+		botaoConfirmar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				if (!Validacao.isCodigoValido(entradaDado.getText())) {
+					entradaDado.setText("");
+				}
+				else {
+					achaCodigoPlanta(colecaoPlantas, Integer.parseInt(entradaDado.getText()));
+					entradaDado.setText("");
+				}
+			}
+		});
+		
+		containerConsultarDados.add(painelCampoDeTexto);
+		containerConsultarDados.add(painelBotoes);
+	}
+	
+	public void pesquisarNomePlanta (ColecaoPlantas colecaoPlantas) {
+		// Configuracoes JFrame
+		setTitle("Pesquisar Planta(s)");
+		setSize(540, 140);
+		setLocationRelativeTo(null);
+		
+		// Configuracoes do Container
+		containerConsultarDados = getContentPane();
+		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
+		
+		// Conficuracoes dos Componentes
+		criaPainelBotoes(colecaoPlantas);
+		criaPainelCampoDeTexto("Digite o Nome da Planta a ser pesquisada: ");
+		
+		botaoConfirmar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				if (!Validacao.isNomeValido(entradaDado.getText().trim())) {
+					entradaDado.setText("");
+				}
+				else {
+					List<Planta> listaPlantasOrdenada = new ArrayList<Planta>(colecaoPlantas.getColecaoPlantas());
+					Collections.sort(listaPlantasOrdenada);
+					new ListarDados().listarDadosOrdenados(
+						colecaoPlantas, 
+						listaPlantasOrdenada,
+						entradaDado.getText().trim()
+					);
+					dispose();
+				};
+			}
+		});
+		
+		containerConsultarDados.add(painelCampoDeTexto);
+		containerConsultarDados.add(painelBotoes);
+	}
+	
+	private void achaCodigoPlanta (ColecaoPlantas colecaoPlantas, Integer codigoProcurado) {
+		for (Planta planta : colecaoPlantas.getColecaoPlantas()) {
+			if (planta.getCodigo().equals(codigoProcurado)) {
+				new Menu().menu(colecaoPlantas);
+				new MostrarTexto().mostraMensagem(
+					colecaoPlantas.getNomePesquisador(), 
+					"Nome: " + planta.getNome() + "\nCodigo: " + planta.getCodigo() + "\nPeso Medio: " + planta.getPesoMedio()
+				);
+				dispose();
+				return ;
+			}
+		}
+		
+		new MostrarTexto().mostraMensagem(
+			"Alerta", 
+			"Nenhuma Planta com o codigo [" + entradaDado.getText() + "] encontrada no sistema."
+		);
+	}
+	
+	private void criaPainelCampoDeTexto (String mensagem) {
+		painelCampoDeTexto = new JPanel(new GridLayout(1, 2, 10, 20));
+		etiq = new JLabel(mensagem);
+		entradaDado = new JTextField();
+		painelCampoDeTexto.add(etiq);
+		painelCampoDeTexto.add(entradaDado);
+	}
+	
+	private void criaPainelBotoes (ColecaoPlantas colecaoPlantas) {
+		painelBotoes = new JPanel(new FlowLayout(1, 80, 0));
+		
+		botaoConfirmar = new JButton("Confirmar");
+		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
+
 		botaoCancelar = new JButton("Cancelar");
 		botaoCancelar.setPreferredSize(new Dimension(95, 30));
 		botaoCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent evt) {
 				new Menu().menu(colecaoPlantas);
 				dispose();
 			}
 		});
-		painelBotoes.add(botaoCancelar);
 		
-		containerEntradaDados.add(painelTextos);
-		containerEntradaDados.add(painelBotoes);
-	}
-	
-	private void acaoBotaoConfirmar (ActionEvent evt, ColecaoPlantas colecaoPlantas) {
-		if (!Validacao.isNomeValido(entradaNome.getText().trim())) {
-			entradaNome.setText("");
-		}
-		else if (!Validacao.isCodigoValido(entradaCodigo.getText(), colecaoPlantas)) {
-			entradaCodigo.setText("");
-		}
-		else if (!Validacao.isPesoMedioValido(entradaPesoMedio.getText())) {
-			entradaPesoMedio.setText("");
-		}
-		else {
-			colecaoPlantas.setColecaoPlantas(new Planta(
-				entradaNome.getText().trim(),
-				Integer.parseInt(entradaCodigo.getText()), 
-				Float.parseFloat(entradaPesoMedio.getText())
-			));
-			new Menu().menu(colecaoPlantas);
-			dispose();
-		}
+		painelBotoes.add(botaoConfirmar);
+		painelBotoes.add(botaoCancelar);
 	}
 }

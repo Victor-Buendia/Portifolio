@@ -42,8 +42,8 @@ public class Menu extends JFrame {
 		// Conficuracoes dos Componentes
 		botaoCadastrar = criaBotao("Cadastrar");
 		botaoCadastrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new EntradaDados().entradaDados(colecaoPlantas);
+			public void actionPerformed(ActionEvent evt) {
+				new RegistraDados().entradaDados(colecaoPlantas);
 				dispose();
 			}
 		});
@@ -51,22 +51,33 @@ public class Menu extends JFrame {
 		
 		botaoListar = criaBotao("Listar");
 		botaoListar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new ListarDados().listarDados(colecaoPlantas, colecaoPlantas.getColecaoPlantas());
-				dispose();
+			public void actionPerformed(ActionEvent evt) {
+				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
+					new ListarDados().listarDados(colecaoPlantas, colecaoPlantas.getColecaoPlantas());
+					dispose();
+				}
+				else {
+					new MostrarTexto().mostraMensagem(
+						"Error", 
+						"E necessario registrar no minimo uma planta para acessar esta opcao."
+					);
+				}
 			}
 		});
 		containerMenu.add(botaoListar);
 		
 		botaoConsultar = criaBotao("Consultar");
 		botaoConsultar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent evt) {
 				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
-					new ConsultarDados().consultarCodigo(colecaoPlantas);
+					new EntradaDados().consultarCodigo(colecaoPlantas);
 					dispose();
 				}
 				else {
-					Visao.mostraMensagemErro("Error", "E necessario registrar no minimo uma planta para acessar esta opcao.");
+					new MostrarTexto().mostraMensagem(
+						"Error", 
+						"E necessario registrar no minimo uma planta para acessar esta opcao."
+					);
 				}
 			}
 		});
@@ -74,13 +85,16 @@ public class Menu extends JFrame {
 		
 		botaoPesquisar = criaBotao("Pesquisar");
 		botaoPesquisar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent evt) {
 				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
-					new ConsultarDados().pesquisarNome(colecaoPlantas);
+					new EntradaDados().pesquisarNomePlanta(colecaoPlantas);
 					dispose();
 				}
 				else {
-					Visao.mostraMensagemErro("Error", "E necessario registrar no minimo uma planta para acessar esta opcao.");
+					new MostrarTexto().mostraMensagem(
+						"Error", 
+						"E necessario registrar no minimo uma planta para acessar esta opcao."
+					);
 				}
 			}
 		});
@@ -88,9 +102,9 @@ public class Menu extends JFrame {
 		
 		botaoSair = criaBotao("Sair");
 		botaoSair.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent evt) {
 				if (Visao.mostraMensagemSimNao("Sair", "Deseja registrar outro Pesquisador e suas respectivas plantas ?")) {
-					new Menu().menu(new ColecaoPlantas(""));
+					new EntradaDados().registrarNomePesquisador();
 					dispose();
 				}
 				else {
