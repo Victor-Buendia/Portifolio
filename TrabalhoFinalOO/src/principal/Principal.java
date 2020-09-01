@@ -1,9 +1,9 @@
 package principal;
 
-import interfaceGrafica.EntradaDados;
+import interfaceGrafica.EntradaTexto;
 
 public class Principal {
 	public static void main (String [] args) {
-		new EntradaDados().registrarNomePesquisador();
+		new EntradaTexto().registrarNomePesquisador();
 	}
 }

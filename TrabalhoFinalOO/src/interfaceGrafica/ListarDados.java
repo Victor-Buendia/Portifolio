@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import dados.ColecaoPlantas;
 import dados.Planta;
 
 public class ListarDados extends JFrame {
@@ -50,7 +49,7 @@ private static final long serialVersionUID = 1L;
 		});
 	}
 	
-	public void listarDados (ColecaoPlantas colecaoPlantas, List<Planta> listaPlanta) {
+	public void listarDados (List<Planta> listaPlanta) {
 		// Configuracoes proprias JFrame
 		setTitle("Listar Plantas");
 		setSize(500, 350);
@@ -61,8 +60,8 @@ private static final long serialVersionUID = 1L;
 		containerListaDados.setLayout(new FlowLayout(1, 20, 20));
 			
 		// Conficuracoes dos Componentes
-		criaTabela(listaPlanta);
-		criaBotoes(colecaoPlantas);
+		criaTabela();
+		criaBotoes();
 		adicionaLinhas(listaPlanta);
 		
 		painelTabela.add(barraRolagem);
@@ -70,7 +69,7 @@ private static final long serialVersionUID = 1L;
 		containerListaDados.add(botaoConfirmar);
 	}
 	
-	public void listarDadosOrdenados (ColecaoPlantas colecaoPlantas, List<Planta> listaPlanta, String nomeProcurado) {
+	public void listarDadosOrdenados (List<Planta> listaPlanta, String nomeProcurado) {
 		// Atributos
 		int qtd;
 		
@@ -84,8 +83,8 @@ private static final long serialVersionUID = 1L;
 		containerListaDados.setLayout(new FlowLayout(1, 1000, 20));
 		
 		// Conficuracoes dos Componentes
-		criaTabela(listaPlanta);
-		criaBotoes(colecaoPlantas);
+		criaTabela();
+		criaBotoes();
 		
 		qtd = adicionaLinhas(listaPlanta, nomeProcurado);
 		etiq = new JLabel(qtd + " Planta(s) encontrada(s) pelo nome [" + nomeProcurado + "] no sistema.", JLabel.CENTER);
@@ -96,18 +95,18 @@ private static final long serialVersionUID = 1L;
 		containerListaDados.add(botaoConfirmar);
 	}
 
-	private void criaBotoes (ColecaoPlantas colecaoPlantas) {
+	private void criaBotoes () {
 		botaoConfirmar = new JButton("Confirmar");
 		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				new Menu().menu(colecaoPlantas);
+				new Menu().menu();
 				dispose();
 			}
 		});
 	}
 	
-	private void criaTabela (List<Planta> listaPlanta) {
+	private void criaTabela () {
 		painelTabela = new JPanel();
 		
 		tabelaConteudos = new JTable(modelo);

@@ -9,7 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import dados.ColecaoPlantas;
+import java.util.List;
+import bancoDeDados.Tabela;
+import dados.Planta;
+import dados.PlantaDAO;
 import saida.Visao;
 
 public class Menu extends JFrame {
@@ -29,7 +32,7 @@ public class Menu extends JFrame {
 		});
 	}
 	
-	public void menu (ColecaoPlantas colecaoPlantas) {
+	public void menu () {
 		// Configuracoes JFrame
 		setTitle("Menu");
 		setSize(600, 300);
@@ -43,7 +46,7 @@ public class Menu extends JFrame {
 		botaoCadastrar = criaBotao("Cadastrar");
 		botaoCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				new RegistraDados().entradaDados(colecaoPlantas);
+				new RegistraDados().entradaDados();
 				dispose();
 			}
 		});
@@ -52,8 +55,9 @@ public class Menu extends JFrame {
 		botaoListar = criaBotao("Listar");
 		botaoListar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
-					new ListarDados().listarDados(colecaoPlantas, colecaoPlantas.getColecaoPlantas());
+				List<Planta> listaPlantas = PlantaDAO.getBancoPlantas(Tabela.getTableName());
+				if (!listaPlantas.isEmpty()) {
+					new ListarDados().listarDados(listaPlantas);
 					dispose();
 				}
 				else {
@@ -69,8 +73,9 @@ public class Menu extends JFrame {
 		botaoConsultar = criaBotao("Consultar");
 		botaoConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
-					new EntradaDados().consultarCodigo(colecaoPlantas);
+				List<Planta> listaPlantas = PlantaDAO.getBancoPlantas(Tabela.getTableName());
+				if (!listaPlantas.isEmpty()) {
+					new EntradaTexto().consultarCodigo(listaPlantas);
 					dispose();
 				}
 				else {
@@ -86,8 +91,9 @@ public class Menu extends JFrame {
 		botaoPesquisar = criaBotao("Pesquisar");
 		botaoPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (!colecaoPlantas.getColecaoPlantas().isEmpty()) {
-					new EntradaDados().pesquisarNomePlanta(colecaoPlantas);
+				List<Planta> listaPlantas = PlantaDAO.getBancoPlantas(Tabela.getTableName());
+				if (!listaPlantas.isEmpty()) {
+					new EntradaTexto().pesquisarNomePlanta();
 					dispose();
 				}
 				else {
@@ -103,8 +109,9 @@ public class Menu extends JFrame {
 		botaoSair = criaBotao("Sair");
 		botaoSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+//				Tabela.deletaTabela(Tabela.getTableName());
 				if (Visao.mostraMensagemSimNao("Sair", "Deseja registrar outro Pesquisador e suas respectivas plantas ?")) {
-					new EntradaDados().registrarNomePesquisador();
+					new EntradaTexto().registrarNomePesquisador();
 					dispose();
 				}
 				else {

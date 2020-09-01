@@ -13,10 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+import bancoDeDados.Tabela;
 import validacao.Validacao;
-import dados.ColecaoPlantas;
 import dados.Planta;
+import dados.PlantaDAO;
 
 public class RegistraDados extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -39,7 +39,7 @@ public class RegistraDados extends JFrame {
 		});
 	}
 	
-	public void entradaDados (ColecaoPlantas colecaoPlantas) {
+	public void entradaDados () {
 		// Configuracoes JFrame
 		setTitle("Registro de Plantas");
 		setSize(500, 220);
@@ -72,7 +72,7 @@ public class RegistraDados extends JFrame {
 		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				acaoBotaoConfirmar(evt, colecaoPlantas);
+				acaoBotaoConfirmar(evt);
 			}
 		});
 		painelBotoes.add(botaoConfirmar);
@@ -81,7 +81,7 @@ public class RegistraDados extends JFrame {
 		botaoCancelar.setPreferredSize(new Dimension(95, 30));
 		botaoCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				new Menu().menu(colecaoPlantas);
+				new Menu().menu();
 				dispose();
 			}
 		});
@@ -91,23 +91,24 @@ public class RegistraDados extends JFrame {
 		containerEntradaDados.add(painelBotoes);
 	}
 	
-	private void acaoBotaoConfirmar (ActionEvent evt, ColecaoPlantas colecaoPlantas) {
+	private void acaoBotaoConfirmar (ActionEvent evt) {
 		if (!Validacao.isNomeValido(entradaNome.getText().trim())) {
 			entradaNome.setText("");
 		}
-		else if (!Validacao.isCodigoValido(entradaCodigo.getText(), colecaoPlantas)) {
+		else if (!Validacao.isCodigoValido(entradaCodigo.getText(), PlantaDAO.getBancoPlantas(Tabela.getTableName()))) {
 			entradaCodigo.setText("");
 		}
 		else if (!Validacao.isPesoMedioValido(entradaPesoMedio.getText())) {
 			entradaPesoMedio.setText("");
 		}
 		else {
-			colecaoPlantas.setColecaoPlantas(new Planta(
+			Planta planta = new Planta(
 				entradaNome.getText().trim(),
 				Integer.parseInt(entradaCodigo.getText()), 
 				Float.parseFloat(entradaPesoMedio.getText())
-			));
-			new Menu().menu(colecaoPlantas);
+			);
+			PlantaDAO.setBancoPlantas(planta, Tabela.getTableName());
+			new Menu().menu();
 			dispose();
 		}
 	}

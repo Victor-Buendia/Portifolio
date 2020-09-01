@@ -16,11 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import dados.ColecaoPlantas;
+import bancoDeDados.Tabela;
 import dados.Planta;
+import dados.PlantaDAO;
 import validacao.Validacao;
 
-public class EntradaDados extends JFrame {
+public class EntradaTexto extends JFrame {
 	private static final long serialVersionUID = 1L;
 		
 	// Atributos
@@ -30,7 +31,7 @@ public class EntradaDados extends JFrame {
 	private JButton botaoConfirmar, botaoCancelar;
 	private JPanel painelBotoes, painelCampoDeTexto;
 	
-	public EntradaDados () {		
+	public EntradaTexto () {		
 		// Configuracoes gerais JFrame
 		setVisible(true);
 		setResizable(false);
@@ -62,7 +63,8 @@ public class EntradaDados extends JFrame {
 					entradaDado.setText("");
 				}
 				else {
-					new Menu().menu(new ColecaoPlantas(entradaDado.getText()));
+					Tabela.criaTabela(entradaDado.getText());
+					new Menu().menu();
 					dispose();
 				}
 			}
@@ -72,7 +74,7 @@ public class EntradaDados extends JFrame {
 		containerConsultarDados.add(botaoConfirmar);
 	}
 	
-	public void consultarCodigo (ColecaoPlantas colecaoPlantas) {
+	public void consultarCodigo (List<Planta> bancoPlantas) {
 		// Configuracoes JFrame
 		setTitle("Consultar Planta");
 		setSize(540, 140);
@@ -83,8 +85,8 @@ public class EntradaDados extends JFrame {
 		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
 		
 		// Conficuracoes dos Componentes
-		criaPainelBotoes(colecaoPlantas);
 		criaPainelCampoDeTexto("Digite o Codigo da Planta a ser pesquisada: ");
+		criaPainelBotoes();
 		
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -92,7 +94,7 @@ public class EntradaDados extends JFrame {
 					entradaDado.setText("");
 				}
 				else {
-					achaCodigoPlanta(colecaoPlantas, Integer.parseInt(entradaDado.getText()));
+					achaCodigoPlanta(PlantaDAO.getBancoPlantas(Tabela.getTableName()), Integer.parseInt(entradaDado.getText()));
 					entradaDado.setText("");
 				}
 			}
@@ -102,7 +104,7 @@ public class EntradaDados extends JFrame {
 		containerConsultarDados.add(painelBotoes);
 	}
 	
-	public void pesquisarNomePlanta (ColecaoPlantas colecaoPlantas) {
+	public void pesquisarNomePlanta () {
 		// Configuracoes JFrame
 		setTitle("Pesquisar Planta(s)");
 		setSize(540, 140);
@@ -113,7 +115,7 @@ public class EntradaDados extends JFrame {
 		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
 		
 		// Conficuracoes dos Componentes
-		criaPainelBotoes(colecaoPlantas);
+		criaPainelBotoes();
 		criaPainelCampoDeTexto("Digite o Nome da Planta a ser pesquisada: ");
 		
 		botaoConfirmar.addActionListener(new ActionListener() {
@@ -122,10 +124,9 @@ public class EntradaDados extends JFrame {
 					entradaDado.setText("");
 				}
 				else {
-					List<Planta> listaPlantasOrdenada = new ArrayList<Planta>(colecaoPlantas.getColecaoPlantas());
+					List<Planta> listaPlantasOrdenada = new ArrayList<Planta>(PlantaDAO.getBancoPlantas(Tabela.getTableName()));
 					Collections.sort(listaPlantasOrdenada);
 					new ListarDados().listarDadosOrdenados(
-						colecaoPlantas, 
 						listaPlantasOrdenada,
 						entradaDado.getText().trim()
 					);
@@ -138,12 +139,12 @@ public class EntradaDados extends JFrame {
 		containerConsultarDados.add(painelBotoes);
 	}
 	
-	private void achaCodigoPlanta (ColecaoPlantas colecaoPlantas, Integer codigoProcurado) {
-		for (Planta planta : colecaoPlantas.getColecaoPlantas()) {
+	private void achaCodigoPlanta (List<Planta> listaPlantas, Integer codigoProcurado) {
+		for (Planta planta : listaPlantas) {
 			if (planta.getCodigo().equals(codigoProcurado)) {
-				new Menu().menu(colecaoPlantas);
+				new Menu().menu();
 				new MostrarTexto().mostraMensagem(
-					colecaoPlantas.getNomePesquisador(), 
+					Tabela.getTableName().toUpperCase(), 
 					"Nome: " + planta.getNome() + "\nCodigo: " + planta.getCodigo() + "\nPeso Medio: " + planta.getPesoMedio()
 				);
 				dispose();
@@ -165,7 +166,7 @@ public class EntradaDados extends JFrame {
 		painelCampoDeTexto.add(entradaDado);
 	}
 	
-	private void criaPainelBotoes (ColecaoPlantas colecaoPlantas) {
+	private void criaPainelBotoes () {
 		painelBotoes = new JPanel(new FlowLayout(1, 80, 0));
 		
 		botaoConfirmar = new JButton("Confirmar");
@@ -175,7 +176,7 @@ public class EntradaDados extends JFrame {
 		botaoCancelar.setPreferredSize(new Dimension(95, 30));
 		botaoCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				new Menu().menu(colecaoPlantas);
+				new Menu().menu();
 				dispose();
 			}
 		});

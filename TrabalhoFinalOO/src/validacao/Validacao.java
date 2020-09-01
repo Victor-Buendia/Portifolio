@@ -1,6 +1,6 @@
 package validacao;
 
-import dados.ColecaoPlantas;
+import java.util.List;
 import dados.Planta;
 import interfaceGrafica.MostrarTexto;
 
@@ -38,9 +38,9 @@ public class Validacao {
 		return true;
 	}
 	
-	public static boolean isCodigoValido (String codigo, ColecaoPlantas colecaoPlantas) {
+	public static boolean isCodigoValido (String codigo, List<Planta> listaPlantas) {
 		if (isCodigoValido(codigo)) {
-			if (!isCodigoUnico(Integer.parseInt(codigo), colecaoPlantas)) {
+			if (!isCodigoUnico(Integer.parseInt(codigo), listaPlantas)) {
 				new MostrarTexto().mostraMensagem(
 					"Error", 
 					"O codigo deve ser unico."
@@ -83,8 +83,8 @@ public class Validacao {
 		return false;
 	}
 	
-	private static boolean isCodigoUnico (Integer codigo, ColecaoPlantas colecaoPlantas) {
-		for (Planta planta : colecaoPlantas.getColecaoPlantas()) {
+	private static boolean isCodigoUnico (Integer codigo, List<Planta> listaPlantas) {
+		for (Planta planta : listaPlantas) {
 			if (planta.getCodigo().equals(codigo)) {
 				return false;
 			}
