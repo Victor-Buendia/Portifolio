@@ -13,7 +13,7 @@ public class ConnectionFactory {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/bancoplantas?useTimezone=true&serverTimezone=UTC", 
+				"jdbc:mysql://localhost:3306/banco_estados?useTimezone=true&serverTimezone=UTC", 
 				"root", 
 				"toor"
 			);

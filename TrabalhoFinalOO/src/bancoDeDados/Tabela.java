@@ -15,8 +15,11 @@ public class Tabela {
 				"CREATE TABLE " + tableName + " " +
 				"(codigo INTEGER not NULL, " +
 	            " nome VARCHAR(255), " +
-	            " peso_medio FLOAT, " +
-	            " PRIMARY KEY ( codigo ))");
+				" genero VARCHAR(1), " +
+	            " estado_saude VARCHAR(1), " +
+				" idade INTEGER, " +
+	            " PRIMARY KEY (codigo))"
+			);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Falha ao criar Table " + tableName);

@@ -35,7 +35,11 @@ public class MostrarTexto extends JFrame {
 		// Configuracoes JFrame
 		setTitle(titulo);
 		
-		int width = (mensagem.length() * 7);
+		int width = 0;
+		for (String linha : mensagem.split("\n")) {
+			width = linha.length() > width ? linha.length(): width;
+		}
+		width *= 7;
 		int height = 1;
 		for (char c : mensagem.toCharArray()) {
 			if (c == '\n') {
@@ -43,7 +47,7 @@ public class MostrarTexto extends JFrame {
 			}
 		}
 		
-		setSize(width < 300 ? 300 : width, 120 + height * 17);
+		setSize((width < 300 ? 300 : width), 120 + height * 17);
 		setLocationRelativeTo(null);
 		
 		// Configuracoes do Container

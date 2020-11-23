@@ -8,17 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import bancoDeDados.Tabela;
-import dados.Planta;
-import dados.PlantaDAO;
+import dados.Pessoa;
+import dados.Populacao;
 import validacao.Validacao;
 
 public class EntradaTexto extends JFrame {
@@ -41,42 +37,10 @@ public class EntradaTexto extends JFrame {
 			}
 		});
 	}
-	
-	public void registrarNomePesquisador () {
+
+	public void consultarCodigo (Populacao populacao) {
 		// Configuracoes JFrame
-		setTitle("Registrar Pesquisador");
-		setSize(540, 140);
-		setLocationRelativeTo(null);
-		
-		// Configuracoes do Container
-		containerConsultarDados = getContentPane();
-		containerConsultarDados.setLayout(new FlowLayout(1, 1000, 20));
-		
-		// Conficuracoes dos Componentes
-		criaPainelCampoDeTexto("Digite o Nome do Pesquisador: ");
-		
-		botaoConfirmar = new JButton("Confirmar");
-		botaoConfirmar.setPreferredSize(new Dimension(95, 30));
-		botaoConfirmar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if (!Validacao.isNomeValido(entradaDado.getText().trim())) {
-					entradaDado.setText("");
-				}
-				else {
-					Tabela.criaTabela(entradaDado.getText());
-					new Menu().menu();
-					dispose();
-				}
-			}
-		});
-		
-		containerConsultarDados.add(painelCampoDeTexto);
-		containerConsultarDados.add(botaoConfirmar);
-	}
-	
-	public void consultarCodigo (List<Planta> bancoPlantas) {
-		// Configuracoes JFrame
-		setTitle("Consultar Planta");
+		setTitle("Consultar Pessoa");
 		setSize(540, 140);
 		setLocationRelativeTo(null);
 		
@@ -85,16 +49,21 @@ public class EntradaTexto extends JFrame {
 		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
 		
 		// Conficuracoes dos Componentes
-		criaPainelCampoDeTexto("Digite o Codigo da Planta a ser pesquisada: ");
-		criaPainelBotoes();
+		criaPainelCampoDeTexto("Digite o Codigo da Pessoa a ser pesquisada: ");
+		criaPainelBotoes(populacao);
 		
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (!Validacao.isCodigoValido(entradaDado.getText())) {
+				if (!Validacao.isCodigoValido(entradaDado.getText(), populacao)) {
+					new MostrarTexto().mostraMensagem(
+						"Erro na consulta", 
+						"Nenhuma Pessoa com o codigo [" + entradaDado.getText() + "] encontrada no sistema." +
+						"\nCertifique que o codigo inserido esteja entre 1 e " + (populacao.getPopulacao().size()) + "."
+					);
 					entradaDado.setText("");
 				}
 				else {
-					achaCodigoPlanta(PlantaDAO.getBancoPlantas(Tabela.getTableName()), Integer.parseInt(entradaDado.getText()));
+					achaCodigoPlanta(populacao, Integer.parseInt(entradaDado.getText()));
 					entradaDado.setText("");
 				}
 			}
@@ -104,9 +73,9 @@ public class EntradaTexto extends JFrame {
 		containerConsultarDados.add(painelBotoes);
 	}
 	
-	public void pesquisarNomePlanta () {
+	public void pesquisarNomePessoa (Populacao populacao) {
 		// Configuracoes JFrame
-		setTitle("Pesquisar Planta(s)");
+		setTitle("Pesquisar Pessoa(s)");
 		setSize(540, 140);
 		setLocationRelativeTo(null);
 		
@@ -115,19 +84,17 @@ public class EntradaTexto extends JFrame {
 		containerConsultarDados.setLayout(new FlowLayout(1, 20, 20));
 		
 		// Conficuracoes dos Componentes
-		criaPainelBotoes();
-		criaPainelCampoDeTexto("Digite o Nome da Planta a ser pesquisada: ");
+		criaPainelBotoes(populacao);
+		criaPainelCampoDeTexto("Digite o Nome da Pessoa a ser pesquisada: ");
 		
 		botaoConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (!Validacao.isNomeValido(entradaDado.getText().trim())) {
+				if (!Validacao.isNomeValido(entradaDado.getText().trim(), 0)) {
 					entradaDado.setText("");
 				}
 				else {
-					List<Planta> listaPlantasOrdenada = new ArrayList<Planta>(PlantaDAO.getBancoPlantas(Tabela.getTableName()));
-					Collections.sort(listaPlantasOrdenada);
 					new ListarDados().listarDadosOrdenados(
-						listaPlantasOrdenada,
+						populacao,
 						entradaDado.getText().trim()
 					);
 					dispose();
@@ -139,23 +106,21 @@ public class EntradaTexto extends JFrame {
 		containerConsultarDados.add(painelBotoes);
 	}
 	
-	private void achaCodigoPlanta (List<Planta> listaPlantas, Integer codigoProcurado) {
-		for (Planta planta : listaPlantas) {
-			if (planta.getCodigo().equals(codigoProcurado)) {
-				new Menu().menu();
+	private void achaCodigoPlanta (Populacao populacao, int codigoProcurado) {
+		for (Pessoa pessoa : populacao.getPopulacao()) {
+			if (pessoa.getIdentificacao().equals(codigoProcurado)) {
+				String [] atributos = pessoa.toString().split("/");
+				new Menu().menu(populacao);
 				new MostrarTexto().mostraMensagem(
-					Tabela.getTableName().toUpperCase(), 
-					"Nome: " + planta.getNome() + "\nCodigo: " + planta.getCodigo() + "\nPeso Medio: " + planta.getPesoMedio()
+					"Pessoa encontrada",
+					"\nNome: " + atributos[0] +
+					"\nGenero: " + atributos[1] +
+					"\nIdentificacao: " + atributos[2] +
+					(atributos[3].equals(" ") ? "\nEstado de Saude: " + atributos[4] : "\nIdade: " + atributos[3])
 				);
 				dispose();
-				return ;
 			}
 		}
-		
-		new MostrarTexto().mostraMensagem(
-			"Alerta", 
-			"Nenhuma Planta com o codigo [" + entradaDado.getText() + "] encontrada no sistema."
-		);
 	}
 	
 	private void criaPainelCampoDeTexto (String mensagem) {
@@ -166,7 +131,7 @@ public class EntradaTexto extends JFrame {
 		painelCampoDeTexto.add(entradaDado);
 	}
 	
-	private void criaPainelBotoes () {
+	private void criaPainelBotoes (Populacao populacao) {
 		painelBotoes = new JPanel(new FlowLayout(1, 80, 0));
 		
 		botaoConfirmar = new JButton("Confirmar");
@@ -176,7 +141,7 @@ public class EntradaTexto extends JFrame {
 		botaoCancelar.setPreferredSize(new Dimension(95, 30));
 		botaoCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				new Menu().menu();
+				new Menu().menu(populacao);
 				dispose();
 			}
 		});

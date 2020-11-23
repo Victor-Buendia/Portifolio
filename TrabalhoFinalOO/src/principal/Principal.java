@@ -1,9 +1,14 @@
 package principal;
 
-import interfaceGrafica.EntradaTexto;
+import dados.Populacao;
+import interfaceGrafica.Menu;
 
 public class Principal {
 	public static void main (String [] args) {
-		new EntradaTexto().registrarNomePesquisador();
+		// Atributos
+		Populacao populacao = new Populacao();
+		
+		// Metodos
+		new Menu().menu(populacao);
 	}
 }
